@@ -91,8 +91,7 @@ def create_dummies(user_data):
     return result_data
 
 
-
-def scale(data, variables, score_name, na=False, method='sum'):
+def scale(data, variables, scale_name, na=False, method='sum'):
     df = data[['person_id'] + variables]
 
     if na:
@@ -104,17 +103,17 @@ def scale(data, variables, score_name, na=False, method='sum'):
         df = df[(df[variables] >= 0).all(axis=1)]
 
     if method == 'mean':
-        df[score_name] = df[variables].mean(axis=1)
+        df[scale_name] = df[variables].mean(axis=1)
     elif method == 'sum':
-        df[score_name] = df[variables].sum(axis=1)
+        df[scale_name] = df[variables].sum(axis=1)
 
-    data = pd.merge(data, df[['person_id', score_name]], on='person_id', how='left')
+    data = pd.merge(data, df[['person_id', scale_name]], on='person_id', how='left')
 
 
-    print('Minimum score calculated:', df[score_name].min())
-    print('Maximum score calculated:', df[score_name].max())
-    print('Number of person_ids with NaN assigned:', data[score_name].isna().sum())
-    print('Number of person_ids with score calculated:', data[score_name].notna().sum())
+    print('Minimum score calculated:', df[scale_name].min())
+    print('Maximum score calculated:', df[scale_name].max())
+    print('Number of person_ids with NaN assigned:', data[scale_name].isna().sum())
+    print('Number of person_ids with score calculated:', data[scale_name].notna().sum())
 
     return data
 
