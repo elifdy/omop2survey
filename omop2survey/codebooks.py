@@ -122,3 +122,55 @@ def codebook(input_data):
     display(HTML(temp))
 
     return
+
+
+def codebook_html(input_data):
+    input_data['question'] = input_data['question'].str.strip().str.lower()
+    input_data['answer'] = input_data['answer'].str.strip().str.lower()
+
+    input_data = input_data.drop_duplicates(subset=['question_concept_id', 'question', 'answer_concept_id'])
+
+    grouped = input_data.groupby(['question_concept_id', 'question'], sort=False)
+
+    formatted_data = []
+
+    for (question_concept_id, question), group in grouped:
+        is_first = True
+
+        for idx, row in group.iterrows():
+            if is_first:
+                formatted_data.append({
+                    'question_concept_id': question_concept_id,
+                    'question': question,
+                    'answer_concept_id': row['answer_concept_id'],
+                    'answer_concept_id recoded as answer_numeric': row['answer_numeric'],
+                    'answer': row['answer'],
+                    'answer recoded as answer_text': row['answer_text']
+                })
+                is_first = False
+            else:
+                formatted_data.append({
+                    'question_concept_id': '',
+                    'question': '',
+                    'answer_concept_id': row['answer_concept_id'],
+                    'answer_concept_id recoded as answer_numeric': row['answer_numeric'],
+                    'answer': row['answer'],
+                    'answer recoded as answer_text': row['answer_text']
+                })
+
+    formatted_codebook_df = pd.DataFrame(formatted_data)
+    current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    file_name = f'codebook_{current_time}.html'
+    workspace_dir = os.path.join(os.getcwd(), 'workspace')
+    os.makedirs(workspace_dir, exist_ok=True)
+    file_path = os.path.join(workspace_dir, file_name)
+
+    temp = formatted_codebook_df.to_html(index=False, escape=False)
+    with open(file_path, 'w') as f:
+        f.write(temp)
+
+    display(FileLink(file_path))
+    display(HTML(temp))
+
+    return
