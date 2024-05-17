@@ -109,7 +109,6 @@ def scale(data, variables, scale_name, na=False, method='sum'):
 
     data = pd.merge(data, df[['person_id', scale_name]], on='person_id', how='left')
 
-
     print('Minimum score calculated:', df[scale_name].min())
     print('Maximum score calculated:', df[scale_name].max())
     print('Number of person_ids with NaN assigned:', data[scale_name].isna().sum())
