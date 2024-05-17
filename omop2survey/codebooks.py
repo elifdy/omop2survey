@@ -159,7 +159,6 @@ def codebook_html(input_data):
                 })
 
     formatted_codebook_df = pd.DataFrame(formatted_data)
-
     current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     file_name = f'codebook_{current_time}.html'
