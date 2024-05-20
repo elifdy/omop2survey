@@ -1,0 +1,107 @@
+---
+title: "How to use the omop2survey package"
+output: html_document
+author: Elif Dede Yildirim
+date: "2024-05-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+-   Install and import packages
+
+```{r}
+library(reticulate)
+library(readr)
+py_install("omop2survey")
+py_install("pandas")
+omop2 <- import("omop2survey")
+pd <- import("pandas")
+```
+
+-   Mapping answers to numeric and text values: input data can be text, a CSV file, an Excel file, or a pandas DataFrame.
+
+```{r}
+
+sample_df <- read_csv("sample_survey.csv")
+sample_df_copy<- sample_df
+sample_df_copy<- omop2$map_answers(sample_df_copy)
+head(sample_df_copy)
+```
+
+-   Create a codebook and save it as an HTML file; the codebook contains only variables in the dataset.
+
+    Note: The codebook function can be used to save the file to the GC workspace bucket whereas codebook_html saves the file locally.
+
+```{r}
+
+omop2$codebook_html(sample_df_copy)
+
+# use codebook function in the cloud environment
+# omop2$codebook(sample_df_copy)
+```
+
+-   Recode missing values
+
+```{r}
+sample_recode_df <- omop2$recode(sample_df_copy)
+head(sample_recode_df)
+```
+
+-   Create dummy coded variables
+
+```{r}
+sample_dummy_df <- omop2$create_dummies(sample_df_copy)
+unique(sample_dummy_df$question_concept_id)
+```
+
+-   Convert data from long format to wide format using numeric values.
+
+    Note: The pivot function can be used in the cloud environment. Use pivot_local to save files locally.
+
+```{r}
+omop2$pivot_local(sample_df_copy)
+
+# use pivot function in the cloud environment
+# omop2$pivot(sample_df_copy)
+```
+
+-   Convert data from long format to wide format using text values.
+
+    Note: The pivot_text function can be used in the cloud environment. Use pivot_text_local to save files locally.
+
+```{r}
+omop2$pivot_text_local(sample_df_copy)
+
+# use pivot_text function in the cloud environment
+# omop2$pivot_text(sample_df_copy)
+```
+
+-   Calculate scale scores using a wide format data frame. Scale function takes following arguments; data, variables, scale_name, na =True/False, method= 'sum' / 'mean'
+
+```{r}
+#read pivot_df
+pivot_df <- read_csv('workspace/pivot_n.csv')
+#define variables
+variables <- list('q43528662.0', 'q43528663.0', 'q43528664.0')
+#define scale_name
+scale_name <- 'afford_healthcare'
+
+pivot_scale <- omop2$scale(pivot_df, variables, scale_name) # default na=False, and method='sum'
+print(summary(pivot_scale$afford_healthcare))
+```
+
+```{r}
+#scale scor3e using mean method
+scale_name <- 'mean_afford_healthcare'
+pivot_scale2 <- omop2$scale(pivot_scale, variables, scale_name, method='mean')
+print(summary(pivot_scale2$mean_afford_healthcare))
+```
+
+-   Save data to the workspace
+
+```{r}
+#save the data
+write_csv(pivot_scale2, 'workspace/pivot_scale.csv')
+```
