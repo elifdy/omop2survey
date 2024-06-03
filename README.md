@@ -3,6 +3,27 @@ The **'omop2survey'** Python package offers a comprehensive solution for transfo
 
 The content of Python files in the package can be found below. For examples of how to use the package, see **example.py** for Python and **exampleR.Rmd** for R.
 
+### subset.py
+
+> 
+>**get_survey_map()**: Retrieves a distinct list of available surveys from the dataset and maps them to a dictionary. The keys in this dictionary are sequential integers starting from 1, and the values are the survey names. This function makes it easy to reference surveys by their assigned numbers.
+> 
+> Returns: A dictionary mapping integers to survey names.
+>
+
+>
+>**show_survey_options()**: Displays the available surveys to the user in a numbered list. This function calls get_survey_map() to retrieve the survey options and then prints each option with its corresponding number. Additionally, it provides an example usage to guide the user on how to select a survey.
+> 
+
+>**import_survey_data(selection)**: Imports survey data based on the user's selection. The function first retrieves the survey map using get_survey_map(), then validates the user's selection. If the selection is valid, it constructs and executes an SQL query to fetch the survey data for the selected survey. The resulting DataFrame contains survey responses and is returned for further analysis.
+> 
+> Parameters: 
+> - ***selection***: An integer representing the user's choice of survey. 
+> 
+> Returns: A DataFrame containing the survey data for the selected survey.
+> 
+
+
 ### response_set.py
 
 >
@@ -13,6 +34,13 @@ The content of Python files in the package can be found below. For examples of h
 > 
 > Returns: The modified DataFrame with added columns answer_numeric and answer_text containing the mapped values.
 >
+
+>**process_answers(input_data)**: Maps survey responses to corresponding numeric and text values by dividing the input survey data into chunks and processes each chunk in parallel using map_answers_chunk(). It handles special case mappings, constructs mappings for numeric and text answers, and utilizes multiprocessing for efficient processing. 
+> 
+> Parameters:
+> - ***input_data***: DataFrame containing survey responses with columns question_concept_id and answer_concept_id. 
+> 
+> Returns: The modified DataFrame containing the processed survey data with columns answer_numeric and answer_text added.
 
 > 
 >**create_dummies(input_data)**: Transforms survey data to include dummy variables for questions that allow multiple answers. 
