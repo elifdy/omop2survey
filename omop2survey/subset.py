@@ -15,9 +15,13 @@ def show_survey_options():
     survey_map = get_survey_map()
     for key, value in survey_map.items():
         print(f"{key}: {value}")
-    print("\nExample usage: selecting 'Social Determinants of Health' (assuming it is the 1st option)")
-    print("# selected_survey_df = omop2survey.import_survey_data(1)")
+    print("\nExample usage in Python: selecting 'Social Determinants of Health' (assuming it is the 7th option)")
+    print("# selected_survey_df = omop2survey.import_survey_data(7)")
     print("# print(selected_survey_df.head(5))")
+
+    print("\nExample usage in R: selecting 'Social Determinants of Health' (assuming it is the 7th option)")
+    print("# selected_survey_df <- omop2survey$import_survey_data(7)")
+    print("# print(head(selected_survey_df)")
 
 
 def import_survey_data(selection):
