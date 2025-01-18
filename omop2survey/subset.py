@@ -21,7 +21,7 @@ def show_survey_options():
 
     print("\nExample usage in R: selecting 'Social Determinants of Health' (assuming it is the 7th option)")
     print("# selected_survey_df <- omop2survey$import_survey_data(7)")
-    print("# print(head(selected_survey_df)")
+    print("# head(selected_survey_df)")
 
 
 def import_survey_data(selection):
